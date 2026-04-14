@@ -1,0 +1,5 @@
+def calculate_distance(distance):
+    """
+    Returns the distance value (can be extended later)
+    """
+    return float(distance)

@@ -1,0 +1,12 @@
+import numpy as np
+
+def find_best_route(routes_df):
+    """
+    Finds the route with minimum distance
+    """
+    if routes_df.empty:
+        return None
+
+    distances = np.array(routes_df["Distance"])
+    min_index = np.argmin(distances)
+    return routes_df.iloc[min_index]

@@ -1,0 +1,121 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ------------------------------
+# Vehicle Classes
+# ------------------------------
+class Vehicle:
+    def __init__(self, vehicle_id, capacity):
+        self.vehicle_id = vehicle_id
+        self.capacity = capacity
+
+    def display_info(self):
+        print(f"Vehicle ID: {self.vehicle_id}, Capacity: {self.capacity}")
+
+# ------------------------------
+# Truck Class (Inheritance)
+# ------------------------------
+class Truck(Vehicle):
+    def __init__(self, vehicle_id, capacity, fuel_efficiency):
+        super().__init__(vehicle_id, capacity)
+        self.fuel_efficiency = fuel_efficiency
+
+    def display_info(self):
+        super().display_info()
+        print(f"Fuel Efficiency: {self.fuel_efficiency} km/l")
+
+# ------------------------------
+# Logistics System
+# ------------------------------
+class LogisticsSystem:
+    def __init__(self):
+        self.routes = pd.DataFrame(columns=["Source", "Destination", "Distance"])
+
+    def add_route(self, source, destination, distance):
+        new_route = pd.DataFrame({
+            "Source": [source],
+            "Destination": [destination],
+            "Distance": [distance]
+        })
+        self.routes = pd.concat([self.routes, new_route], ignore_index=True)
+
+    def optimize_route(self):
+        if self.routes.empty:
+            print("No routes available!")
+            return None
+        distances = np.array(self.routes["Distance"])
+        min_index = np.argmin(distances)
+        best_route = self.routes.iloc[min_index]
+        print("\nOptimized Route:")
+        print(best_route)
+        return best_route
+
+    def visualize_routes(self):
+        if self.routes.empty:
+            print("No data to visualize!")
+            return
+        labels = self.routes["Source"] + " → " + self.routes["Destination"]
+        plt.figure(figsize=(8, 5))
+        plt.bar(labels, self.routes["Distance"], color='skyblue')
+        plt.title("Route Distance Comparison")
+        plt.xlabel("Route")
+        plt.ylabel("Distance (km)")
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
+
+# ------------------------------
+# Safe Input Functions
+# ------------------------------
+def safe_int_input(prompt):
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print("Please enter a valid integer.")
+
+def safe_float_input(prompt):
+    while True:
+        try:
+            return float(input(prompt))
+        except ValueError:
+            print("Please enter a valid number.")
+
+# ------------------------------
+# Main Program (User Input Mode)
+# ------------------------------
+def main():
+    # --- Trucks Input ---
+    trucks = []
+    n_trucks = safe_int_input("Enter number of trucks: ")
+    for i in range(n_trucks):
+        print(f"\nTruck {i+1}:")
+        truck_id = input("Enter Truck ID: ")
+        capacity = safe_int_input("Enter Truck Capacity: ")
+        fuel_efficiency = safe_float_input("Enter Fuel Efficiency (km/l): ")
+        truck = Truck(truck_id, capacity, fuel_efficiency)
+        trucks.append(truck)
+
+    if trucks:
+        print("\nTruck Details:")
+        for truck in trucks:
+            truck.display_info()
+
+    # --- Routes Input ---
+    system = LogisticsSystem()
+    n_routes = safe_int_input("\nEnter number of routes: ")
+    for i in range(n_routes):
+        print(f"\nRoute {i+1}:")
+        source = input("Enter Source: ")
+        destination = input("Enter Destination: ")
+        distance = safe_float_input("Enter Distance (km): ")
+        system.add_route(source, destination, distance)
+
+    # --- Operations ---
+    system.optimize_route()
+    system.visualize_routes()
+
+# Run Program
+if __name__ == "__main__":
+    main()

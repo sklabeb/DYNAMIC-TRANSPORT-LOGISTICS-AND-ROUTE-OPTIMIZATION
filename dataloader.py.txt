@@ -1,0 +1,12 @@
+import pandas as pd
+
+def create_empty_routes():
+    return pd.DataFrame(columns=["Source", "Destination", "Distance"])
+
+def add_route(routes_df, source, destination, distance):
+    new_route = pd.DataFrame({
+        "Source": [source],
+        "Destination": [destination],
+        "Distance": [distance]
+    })
+    return pd.concat([routes_df, new_route], ignore_index=True)
